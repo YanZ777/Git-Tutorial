@@ -17,7 +17,7 @@ with others on the same repository.
 This is going to be a fairly watered down version, so here goes. 
 
 First things first, what is Git? 
-Git is a version control system. There are losts of different version control
+Git is a version control system. There are lots of different version control
 systems, Git is just one of them, and a popular one to boot. 
 What is a version control system? It's a way of controlling multiple versions 
 of files. Think of it as a way to save off snapshots of your work in different
@@ -28,7 +28,13 @@ The way that you will use Git will consist of a local repostory and a remote
 repository. Think of the local reposity as snapshots that are only on your 
 local drive, and the remote repository as snapshots that are on the interwebs. 
 To go with a game analogy, it's very much like Steam where you have local
-saves, and then yo uhave saves on the Steam cloud. 
+saves, and then you have saves on the Steam cloud. 
+
+An important thing of note: 
+You don't have to work on a remote repository. You can actually just work on
+a local repository. The remote repostiroy just lets you have your commits saved
+in an additional location other than your local computer, so if something does 
+happen to said computer, it'll be backed up.
 
 When using Git the process will go something along the lines of such. Again, 
 note that this is taking into account that you are the sole contributor to the
@@ -92,6 +98,8 @@ https://try.github.io/levels/1/challenges/1
 At the very least, I would read through the assignments to get a general idea
 of what is going on, then do the tutorials. 
 
+For any of this, do not be afraid to ask for help! 
+
 ---------------------------------------------------------------------------------------------------
 
 	First assignment. This will teach basics of using Git.
@@ -138,14 +146,23 @@ of what is going on, then do the tutorials.
 		Notice that there is now text saying that the 
 	git push
 	
+	FYI: 
+		You can check your commit history! 
+		Just type in git log and it will show the series of commits that have 
+		been made on that branch.
+		Next to each commit, there is a combination of letters and symbols. 
+		That combination of letters and symbols is called a hash, and it 
+		represents the id of the commit. Every commit has this id, and every 
+		id is unique. 
+
 ---------------------------------------------------------------------------------------------------
 
-	Second assignment. This will teach branching.
+	Not really an assignment more so than a lecture. This will teach branching.
 	What do I mean by branching? This is basically a way for you to explore 
 	other avenues of you work without having to do too much work to get back
 	to a previous state you were in. 
 	Thus far, we have had a pretty linear progress of how commits are made. 
-	This means that you commit history visualized may look something like: 
+	This means that the commit history visualized may look something like: 
 		#################
 		# Start Example #
 		#################
@@ -156,10 +173,10 @@ of what is going on, then do the tutorials.
 		################
 		# End  Example #
 		################
-	In a very simplistic view: 
-		* commit B 
+	In simplistic view: 
+		* commit B (on master branch)
 		|
-		* commit A
+		* commit A (on master branch)
 			
 	In Git, you can create a new branch, and this will do exactly what it says,
 	which is to branch off of your current state. 
@@ -181,17 +198,50 @@ of what is going on, then do the tutorials.
 		################
 		# End  Example #
 		################
-
+	In simplistic view: 
+		* commit C (this commit is on demo_branch only) 
+		|
+		* commit B (on master and demo branch)
+		| 
+		* commit A (on master and demo branch) 
+	Why are there no graphs in this branch? There aren't any graphs in this
+	branch because the branches haven't diverged yet. Currently, the second 
+	branch that I've made has everything on the original branch, plus an extra
+	commit. In other terms, the new branch made is a superset of the original 
+	branch / the original branch is a subset of the new branch.
 	
-	So now, your commit history visualized will appear something like: 
-	In a very simplistic view: 
+	
+	If you switch back to your original branch (git checkout 
+	<orignial_branch_name>) and make a commit, git will begin to diverge the 
+	two. 
+	Now the commit history visualized will appear something like: 
+		#################
+		# Start Example #
+		#################
+		$ git log --graph --oneline --decorate --all
+		* 009df45 (HEAD -> master) Another commit to continue showing branching.
+		| * 79731d8 (demo_branch) Intermediate commit. This commit is used to show branching.
+		|/
+		* 10ab3da (origin/master, origin/HEAD) Adding files for people to practice on. Added guest book and merge conflict story.
+		* 86256a4 Initial commit
+		################
+		# End  Example #
+		################
+	In simplistic view: 
+		* commit D (on master branch only)
+		| * commit C (on demo_branch only)
+		|/
+		* commit B (on master and demo branch)
+		|
+		* commit A (on master and demo branch)
 		
-		/
-		* commit B 
-		|
-		|
-		|
-		* commit A
+	What does this all mean for you? 
+	Well this means that you can easily switch between different states (the
+	different commits that you have) without losing all your changes or undoing
+	a lot of work. This is useful for working on different tasks in the same 
+	repository. Actually, when you checkout to a branch, you can also checkout 
+	to different commits, so you can effectively go back in time with the git 
+	history.
 	
 	
 ---------------------------------------------------------------------------------------------------
@@ -203,8 +253,11 @@ of what is going on, then do the tutorials.
 	Add a new sentence to the last paragraph. Before pushing to the remote 
 	repository, please let me know beforehand so I can set up the last bits 
 	of the assignemnt.
-	Now do the same process as 
-	
+	Now do the same process as making a commit. Except now, if you are trying 
+	to pull, Git won't let you because you have changes on your local branch
+	that aren't saved and don't exist on the remote branch. Git doesn't let 
+	you pull so that you don't lose you work. 
+	Now how do we fix this? 
 	
 	Several workflows you can do for dealing with merging: 
 		workflow 1 (this is the workflow I usually do, but what you do is 
@@ -215,7 +268,72 @@ of what is going on, then do the tutorials.
 				Pull from remote 
 				Unstash changes 
 				Resolve merge conflicts, if any 
+			
+		workflow 2 (this is workflow is a bit more permanent): 
+			Overall gist: 
+				Make changes 
+				Commit changes (without pulling, I know)
+				Pull from remote 
+				Resolve merge conflicts, if any
 				
+	Whichever workflow you take, there may be merge conflicts that you have to
+	fix. When this happens, git status will show you which files have merge 
+	conflicts and git will be in the merging state. This type of merge conflict 
+	occurs when you have changes on your local branch that conflict with the 
+	changes on the remote branch. Basically this means that someone tried to 
+	change the same things that you did, and now Git doesn't know which changes
+	to take. 
+	To fix the merge conflictson the files, open the file in your favorite 
+	editor. There are a great many diff tools (tools to help you view the
+	difference between the two files) out there, but I think it's important 
+	to learn how to read the diff raw so that you understand what is occuring 
+	when you do a merge. 
+	In your file, you will see certain notations. 
+		>>>>> commit #
+			This means the start of the merge conflict, these changes 
+			are the ones grabbed from that particular hash.
+		=====
+			Separating line between the merge conflict.
+		<<<<< commit #
+			End of the merge conflict, these are the changes grabbed from that
+			particular hash. 
+			
+	An example may look like: 	
+		code stuff
+		code stuff code stuff 
+		>>>>> HEAD 
+			Original changes that came from the branch you are currently on
+		=====
+			Modified changes from the branch that you are merging in.
+		<<<<< 52a1d908ab131c2e82
+		more code stuff blah blah blah 
+		code code code
+		
+	To get rid of the merge conflict, you remove all the delimiting markers 
+	and put in the changes you want. They can be the original changes, the 
+	modified changes, a mixture of the two, or something completely different 
+	(althoug that is usually not recommended). 
+	
+	Going based off of the example above, we would then have: 
+		code stuff
+		code stuff code stuff 
+			Original changes that came from the branch you are currently on
+		more code stuff blah blah blah 
+		code code code
+		
+	We would then go back to our git bash prompt and check on the git status.
+	Even though we had fixed the merge conflict, git will not consider it 
+	resolved until we mark it as resolved, which means adding it as a file to
+	be staged. Once that has been done, we make a commit (this will usually
+	have information about the merge conflict with it in this case). We then
+	follow through with the rest of the steps of pushing it out to the remote
+	repository. 
+	
+	FYI: 
+		Yes, resolving a merge conflict is a commit. If you check the git
+		history, you will see the merge conflict commit.
+		
+	Then continue on your merry way! 	
 	
 
 ---------------------------------------------------------------------------------------------------
@@ -223,36 +341,76 @@ of what is going on, then do the tutorials.
 
 Key commands to know: 
 	git add 
-		different arguments: 
+		Stages files for the commit.
+		Available arguments: 
 			. 
-				add all 
+				Adds all the files (including untracked ones!). 
 			<file_name> 
-				adds that particular file to be staged				
+				Adds that particular file to be staged.
+	git checkout 
+		Available arguments: 
+			<branch_name>
+				Changes the files to reflect the changes on this branch.
+			<commit_hash>
+				Changes the files to reflect the changes leading up to this 
+				commit.
 	git clone
+		Available arguments: 
+			<repository link>
+				Clones the remote repository to the local drive.
 	git commit 
-		different arguments: 
-			-m 
-				message 
+		Creates a commit. Opens up the text editor you configured Git to 
+		so that you can write your commit message.
+		Available arguments: 
+			-m "<message here in quotes>"
+				Shorthand way of creating a commit with the given message in 
+				quotes. 
 			--amend 
-				amends the most recent commit 
+				Amends the most recent commit.
 	git log 
-		different arguments: 
+		Shows all the commits on the branch starting with most recent commits
+		in time to least recent commits in time.
+		Available arguments: 
 			-p
-				shows the changes for that commit 
+				Shows the changes for that commit.
 			--name-only
-				shows only the changed files for that commit 
+				Shows only the names of the changed files for that commit.
 	git pull 
-		really just git fetch + git merge used together
+		This is really just git fetch + git merge used together.
+			Takes the commits from the remote repository that are not yet on
+			the local repository and puts them on the local repository.
+			Notifies the user of any merge conflicts, if needed.
+			
 	git push 
-	git stash 
-		save 
-		list 
-		pop
-		push 
+		Pushes the commits on the local branch to the remote repository.
+			Takes all the commits on the local repostiroy that are not yet on
+			the remote repository and puts them on the remote repository.
+	git stash
+		Git stash is a way for users to temporarily save things without making
+		a commit 
+		WARNING: If you drop things from the stash, they are deleted. There is
+		no way to recover them like with a commit.
+		Available arguments: 
+			apply stash@{<some_number_here>}
+				applies the stash corresponding to the some_number_here
+			drop stash@{<some_number_here>}
+				removes the stash from the list of stashes
+			list 
+				Shows the current stash.
+			pop 
+				With no arguments, this will just take the last stash you pushed
+				on, apply it, and drop it from the stash list
+				Think of it as a git stash apply and a git stash drop combined.
+				different arguments: 
+					stash@{<some_number_here>}	
+			save "message in quotes"
+				Saves the stash with the following message in quotes.
 	git status 
-		shows the status of your work 
-		really useful 
-		you'll use it a lot 
+		Git status is a way for you to show the current state that you are in. 
+		This is mainly pertient so you can view which files have changed as
+		well as which files are currently staged for the commit. It will also
+		let you know the state of your branch relative to the remote
+		repository (if there is one).
 		
 ---------------------------------------------------------------------------------------------------
 
