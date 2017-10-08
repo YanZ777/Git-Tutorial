@@ -367,6 +367,12 @@ Key commands to know:
 				quotes. 
 			--amend 
 				Amends the most recent commit.
+	git diff
+		Shows the diff (difference) between all the files that have been 
+		changed but are not yet staged. 
+		Available arguments: 
+			--cached 
+				Shows the diff between all the files that hav been staged.
 	git log 
 		Shows all the commits on the branch starting with most recent commits
 		in time to least recent commits in time.
